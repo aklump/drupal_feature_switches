@@ -1,0 +1,27 @@
+{
+    "name": "aklump_drupal/feature_switches",
+    "description": "Provides custom Drupal integration for Feature Switches.",
+    "type": "drupal-custom-module",
+    "license": "GPL-2.0+",
+    "homepage": "https://drupal.org/project/feature_switches",
+    "authors": [
+        {
+            "name": "Aaron Klump (aklump)",
+            "homepage": "https://www.drupal.org/u/aklump",
+            "role": "Maintainer"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Drupal\\feature_switches\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Drupal\\Tests\\feature_switches\\Unit\\": "./tests/Unit/"
+        }
+    }
+}

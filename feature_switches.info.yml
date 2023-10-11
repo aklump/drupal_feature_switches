@@ -1,0 +1,21 @@
+# Here is the schema: https://www.drupal.org/docs/creating-custom-modules/let-drupal-know-about-your-module-with-an-infoyml-file
+
+name: 'Feature Switches'
+description: 'Provies a means to toggle website features on and off.'
+package: 'In the Loft Studios'
+type: module
+core_version_requirement: ^8 || ^9
+version: 0.0.0
+
+# The minimum PHP version required by this module.
+php: 7.3
+
+#dependencies:
+#  - datetime:datetime
+#  - link:link
+#  - drupal:views
+#
+#test_dependencies:
+# - drupal:image
+
+# read more at https://www.drupal.org/node/2000204

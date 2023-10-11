@@ -1,0 +1,8 @@
+*.jig.*
+.idea/
+/vendor/
+composer.lock
+feature--*.md
+node_modules/
+package.lock
+tests/Unit/reports/

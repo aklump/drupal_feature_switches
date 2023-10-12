@@ -12,7 +12,7 @@ Allows you to flag features as ready or not, live or not from a central "switchb
 ## How to Define Feature Switches
 
 1. Create a file in the same directory as _settings.php_. Call it _feature\_switches.php_.
-2. Add to the top of _settings.php_, this line `include_once __DIR__ . '/feature_switches.php';`
+2. Add to _settings.php_, this line `include_once __DIR__ . '/feature_switches.php';`.  **Note: you should add this AFTER `$config['system.logging']['error_level']` otherwise you may not see the expected error output, if your features are in error.**
 3. Open _feature\_switches.php_ and add one or more features, like this:
 
 ```php

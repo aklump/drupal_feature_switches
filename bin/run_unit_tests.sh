@@ -7,3 +7,4 @@ cd "$__DIR__/.."
 #./vendor/bin/phpunit -c ./tests/phpunit.xml "$@"
 #./vendor/bin/phpunit -c ./tests/phpunit.xml --testdox "$@"
 ./vendor/bin/phpunit -c ./tests/phpunit.xml "$@" --coverage-html=./tests/Unit/reports
+echo ./tests/Unit/reports/index.html

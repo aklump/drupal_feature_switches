@@ -50,7 +50,7 @@
 <li>Add to the top of <em>settings.php</em>, this line <code>include_once __DIR__ . '/feature_switches.php';</code></li>
 <li>Open <em>feature_switches.php</em> and add one or more features, like this:</li>
 </ol>
-<pre><code class="php">\Drupal\feature_switches\FeatureList::global()
+<pre><code class="php">\Drupal\feature_switches\FeatureSwitches::global()
   -&gt;add(\Drupal\feature_switches\Feature::create('show_outlines')
     -&gt;setDescription('Add outlines to all images.')
     -&gt;setIsReady(TRUE)
@@ -64,6 +64,12 @@
 </code></pre>
 <blockquote class="blockquote"><p>For dynamic switch values--such as those depending on the DI container--you will need to set those switches later in the bootstrap of Drupal, for example inside an event listener.</p>
 </blockquote>
+<h3>Unready Features Cannot Be Live</h3>
+<p>This will be enforced unless you use the <code>FeatureSwitchOptions::ALLOW_UNREADY_LIVE</code> option like this:</p>
+<pre><code class="php">FeatureSwitches::global()
+  -&gt;setOptions(\Drupal\feature_switches\FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+</code></pre>
+<p>It has to be done before trying to add the unready, live feature, otherwise a <code>Drupal\feature_switches\FeatureNotReadyException</code> is thrown.</p>
 <h2>Setting Switches Inside Event Listeners</h2>
 <p>If you have a switch that is dependent on the current user having, say, a given role, you will need to wait until that current user is loaded to calculate that value and set the switch since the container is not yet initialized in <em>settings.php</em> when you defined the switch. So to do that, you can listen for the <code>\Symfony\Component\HttpKernel\KernelEvents::REQUEST</code> event, and then set the value accordingly.</p>
 <p>It's possible to set a switch anywhere in your code, so this is just a tested suggestion. This event is the earliest point when the user is available, in the Drupal bootstrap.</p>
@@ -73,7 +79,7 @@
 <p><em>my_module/src/EventSubscriber/MyModuleFeatureSwitches.php</em></p>
 <pre><code class="php">namespace Drupal\my_module\EventSubscriber;
 
-use Drupal\feature_switches\FeatureList;
+use Drupal\feature_switches\FeatureSwitches;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -103,14 +109,14 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
   public function setUserDependentFeatureSwitches(RequestEvent $event) {
     $early_access = in_array('early_access', \Drupal::currentUser()
       -&gt;getRoles(TRUE));
-    FeatureList::global()
+    FeatureSwitches::global()
       -&gt;get('user_files_download')
       -&gt;setIsLive($early_access);
   }
 
 }
 </code></pre>
-<blockquote class="blockquote"><p><code>FeatureList::global()-&gt;get('bogus')-&gt;setIsLive(TRUE)</code> will fail quietly, when <code>bogus</code> is not added. In other words <code>setIsLive()</code> will have no effect. If you call <code>FeatureList::global()-&gt;isLive('bogus)</code> it will return <code>FALSE</code>.</p>
+<blockquote class="blockquote"><p><code>FeatureSwitches::global()-&gt;get('bogus')-&gt;setIsLive(TRUE)</code> will fail quietly, when <code>bogus</code> is not added. In other words <code>setIsLive()</code> will have no effect. If you call <code>FeatureSwitches::global()-&gt;isLive('bogus)</code> it will return <code>FALSE</code>.</p>
 </blockquote>
 <h3>Make a Service Class Entry</h3>
 <p><em>my_module.services.yml</em></p>
@@ -129,13 +135,13 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
 <h2>Using Your Feature Switches</h2>
 <p>The whole point of this module to is allow your codebase to react differently based on a feature being live or not. It's quite simple once your features have been created to check them.</p>
 <h3>Do Something When the Feature Is Live</h3>
-<pre><code class="php">if (\Drupal\feature_switches\FeatureList::isLive('user_files_download')) {
+<pre><code class="php">if (\Drupal\feature_switches\FeatureSwitches::isLive('user_files_download')) {
   // Proceed with the process...
 }
 </code></pre>
 <h3>Access the Feature Info</h3>
 <pre><code class="php">/** @var \Drupal\feature_switches\Feature $foo_feature */
-$download_feature = \Drupal\feature_switches\FeatureList::global()-&gt;get('download');
+$download_feature = \Drupal\feature_switches\FeatureSwitches::global()-&gt;get('download');
 $download_feature-&gt;getId();
 $download_feature-&gt;getDescription();
 $download_feature-&gt;isReady();

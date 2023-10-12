@@ -86,6 +86,8 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
 }
 ```
 
+> `FeatureList::global()->get('bogus')->setIsLive(TRUE)` will fail quietly, when `bogus` is not added. In other words `setIsLive()` will have no effect. If you call `FeatureList::global()->isLive('bogus)` it will return `FALSE`.
+
 ### Make a Service Class Entry
 
 _my\_module.services.yml_

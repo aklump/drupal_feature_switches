@@ -7,7 +7,7 @@ Allows you to flag features as ready or not, live or not from a central "switchb
 ## How to Define Feature Switches
 
 1. Create a file in the same directory as _settings.php_. Call it _feature\_switches.php_.
-2. Add to the top of _settings.php_, this line `require_once __DIR__ . '/feature_switches.php';`
+2. Add to the top of _settings.php_, this line `include_once __DIR__ . '/feature_switches.php';`
 3. Open _feature\_switches.php_ and add one or more features, like this:
 
 ```php
@@ -30,7 +30,11 @@ Allows you to flag features as ready or not, live or not from a central "switchb
 
 If you have a switch that is dependent on the current user having, say, a given role, you will need to wait until that current user is loaded to calculate that value and set the switch since the container is not yet initialized in _settings.php_ when you defined the switch. So to do that, you can listen for the `\Symfony\Component\HttpKernel\KernelEvents::REQUEST` event, and then set the value accordingly.
 
-It's possible to set a switch anywhere in your code, so this is just a tested suggestion.  This event is the earliest point when the user is available, in the Drupal bootstrap.
+It's possible to set a switch anywhere in your code, so this is just a tested suggestion. This event is the earliest point when the user is available, in the Drupal bootstrap.
+
+When you do this you must have a custom module, where you can add the event listener.
+
+And you must declare a dependency on the feature_switches module.
 
 ### The Event Listener Class
 
@@ -86,6 +90,16 @@ services:
   my_module.feature_switches:
     class: \Drupal\my_module\EventSubscriber\MyModuleFeatureSwitches
     tags: [ { name: event_subscriber } ]
+
+```
+
+### Declare Module Dependency
+
+_my\_module.info.yml_
+
+```yaml
+dependencies:
+  - feature_switches:feature_switches
 
 ```
 

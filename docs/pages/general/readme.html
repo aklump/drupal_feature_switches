@@ -47,7 +47,7 @@
 <h2>How to Define Feature Switches</h2>
 <ol>
 <li>Create a file in the same directory as <em>settings.php</em>. Call it <em>feature_switches.php</em>.</li>
-<li>Add to the top of <em>settings.php</em>, this line <code>require_once __DIR__ . '/feature_switches.php';</code></li>
+<li>Add to the top of <em>settings.php</em>, this line <code>include_once __DIR__ . '/feature_switches.php';</code></li>
 <li>Open <em>feature_switches.php</em> and add one or more features, like this:</li>
 </ol>
 <pre><code class="php">\Drupal\feature_switches\FeatureList::global()
@@ -66,7 +66,9 @@
 </blockquote>
 <h2>Setting Switches Inside Event Listeners</h2>
 <p>If you have a switch that is dependent on the current user having, say, a given role, you will need to wait until that current user is loaded to calculate that value and set the switch since the container is not yet initialized in <em>settings.php</em> when you defined the switch. So to do that, you can listen for the <code>\Symfony\Component\HttpKernel\KernelEvents::REQUEST</code> event, and then set the value accordingly.</p>
-<p>It's possible to set a switch anywhere in your code, so this is just a tested suggestion.  This event is the earliest point when the user is available, in the Drupal bootstrap.</p>
+<p>It's possible to set a switch anywhere in your code, so this is just a tested suggestion. This event is the earliest point when the user is available, in the Drupal bootstrap.</p>
+<p>When you do this you must have a custom module, where you can add the event listener.</p>
+<p>And you must declare a dependency on the feature_switches module.</p>
 <h3>The Event Listener Class</h3>
 <p><em>my_module/src/EventSubscriber/MyModuleFeatureSwitches.php</em></p>
 <pre><code class="php">namespace Drupal\my_module\EventSubscriber;
@@ -114,6 +116,12 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
   my_module.feature_switches:
     class: \Drupal\my_module\EventSubscriber\MyModuleFeatureSwitches
     tags: [ { name: event_subscriber } ]
+
+</code></pre>
+<h3>Declare Module Dependency</h3>
+<p><em>my_module.info.yml</em></p>
+<pre><code class="yaml">dependencies:
+  - feature_switches:feature_switches
 
 </code></pre>
 <h2>Using Your Feature Switches</h2>

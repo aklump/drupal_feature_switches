@@ -14,6 +14,11 @@ use PHPUnit\Framework\TestCase;
  */
 class FeatureListTest extends TestCase {
 
+  public function testSetIsLiveOnNonExistentHasNoEffect() {
+    FeatureList::global()->get('bogus')->setIsLive(TRUE);
+    $this->assertFalse(FeatureList::isLive('bogus'));
+  }
+
   public function testIsLiveReturnsFalseForLiveExistent() {
     FeatureList::global()->add(Feature::create('bar')->setIsLive(TRUE));
     $this->assertTrue(FeatureList::isLive('bar'));

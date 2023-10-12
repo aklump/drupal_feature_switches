@@ -16,7 +16,7 @@ Allows you to flag features as ready or not, live or not from a central "switchb
 3. Open _feature\_switches.php_ and add one or more features, like this:
 
 ```php
-\Drupal\feature_switches\FeatureList::global()
+\Drupal\feature_switches\FeatureSwitches::global()
   ->add(\Drupal\feature_switches\Feature::create('show_outlines')
     ->setDescription('Add outlines to all images.')
     ->setIsReady(TRUE)
@@ -48,7 +48,7 @@ _my\_module/src/EventSubscriber/MyModuleFeatureSwitches.php_
 ```php
 namespace Drupal\my_module\EventSubscriber;
 
-use Drupal\feature_switches\FeatureList;
+use Drupal\feature_switches\FeatureSwitches;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -78,7 +78,7 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
   public function setUserDependentFeatureSwitches(RequestEvent $event) {
     $early_access = in_array('early_access', \Drupal::currentUser()
       ->getRoles(TRUE));
-    FeatureList::global()
+    FeatureSwitches::global()
       ->get('user_files_download')
       ->setIsLive($early_access);
   }
@@ -86,7 +86,7 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
 }
 ```
 
-> `FeatureList::global()->get('bogus')->setIsLive(TRUE)` will fail quietly, when `bogus` is not added. In other words `setIsLive()` will have no effect. If you call `FeatureList::global()->isLive('bogus)` it will return `FALSE`.
+> `FeatureSwitches::global()->get('bogus')->setIsLive(TRUE)` will fail quietly, when `bogus` is not added. In other words `setIsLive()` will have no effect. If you call `FeatureSwitches::global()->isLive('bogus)` it will return `FALSE`.
 
 ### Make a Service Class Entry
 
@@ -117,7 +117,7 @@ The whole point of this module to is allow your codebase to react differently ba
 ### Do Something When the Feature Is Live
 
 ```php
-if (\Drupal\feature_switches\FeatureList::isLive('user_files_download')) {
+if (\Drupal\feature_switches\FeatureSwitches::isLive('user_files_download')) {
   // Proceed with the process...
 }
 ```
@@ -126,7 +126,7 @@ if (\Drupal\feature_switches\FeatureList::isLive('user_files_download')) {
 
 ```php
 /** @var \Drupal\feature_switches\Feature $foo_feature */
-$download_feature = \Drupal\feature_switches\FeatureList::global()->get('download');
+$download_feature = \Drupal\feature_switches\FeatureSwitches::global()->get('download');
 $download_feature->getId();
 $download_feature->getDescription();
 $download_feature->isReady();

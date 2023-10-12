@@ -5,7 +5,7 @@ namespace Drupal\feature_switches;
 /**
  * The main API class.
  */
-class FeatureList {
+class FeatureSwitches {
 
   /**
    * @var \Drupal\feature_switches\Switchboard|null

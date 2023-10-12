@@ -10,10 +10,11 @@ use Drupal\feature_switches\Switchboard;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Drupal\feature_switches\Operator
- * @uses   \Drupal\feature_switches\Feature
- * @uses   \Drupal\feature_switches\FeatureNotReadyException
- * @uses   \Drupal\feature_switches\FeatureSwitchOptions
+ * @covers   \Drupal\feature_switches\Operator
+ * @covers   \Drupal\feature_switches\FeatureAlreadyAddedException
+ * @covers   \Drupal\feature_switches\FeatureNotReadyException
+ * @uses     \Drupal\feature_switches\Feature
+ * @uses     \Drupal\feature_switches\FeatureSwitchOptions
  */
 class OperatorTest extends TestCase {
 
@@ -91,7 +92,7 @@ class OperatorTest extends TestCase {
     $switchboard = new Switchboard();
     $feature = new Feature('foo');
     (new Operator($switchboard))->add($feature);
-    $this->expectException(\InvalidArgumentException::class);
+    $this->expectException(\Drupal\feature_switches\FeatureAlreadyAddedException::class);
     (new Operator($switchboard))->add($feature);
   }
 

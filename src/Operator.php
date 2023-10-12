@@ -42,7 +42,7 @@ final class Operator implements \JsonSerializable {
 
   public function add(Feature $feature): self {
     if (static::has($feature)) {
-      throw new \InvalidArgumentException(sprintf('The feature you are trying to add already exists in the switchboard: %s', $feature));
+      throw new FeatureAlreadyAddedException($feature);
     }
     if (!$this->options & FeatureSwitchOptions::ALLOW_UNREADY_LIVE && !$feature->isReady() && $feature->isLive()) {
       throw new FeatureNotReadyException($feature);

@@ -31,6 +31,17 @@ Allows you to flag features as ready or not, live or not from a central "switchb
 
 > For dynamic switch values--such as those depending on the DI container--you will need to set those switches later in the bootstrap of Drupal, for example inside an event listener.
 
+### Unready Features Cannot Be Live
+
+This will be enforced unless you use the `FeatureSwitchOptions::ALLOW_UNREADY_LIVE` option like this:
+
+```php
+FeatureSwitches::global()
+  ->setOptions(\Drupal\feature_switches\FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+```
+
+It has to be done before trying to add the unready, live feature, otherwise a `Drupal\feature_switches\FeatureNotReadyException` is thrown.
+
 ## Setting Switches Inside Event Listeners
 
 If you have a switch that is dependent on the current user having, say, a given role, you will need to wait until that current user is loaded to calculate that value and set the switch since the container is not yet initialized in _settings.php_ when you defined the switch. So to do that, you can listen for the `\Symfony\Component\HttpKernel\KernelEvents::REQUEST` event, and then set the value accordingly.

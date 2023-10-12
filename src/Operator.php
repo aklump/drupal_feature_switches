@@ -12,8 +12,24 @@ final class Operator implements \JsonSerializable {
    */
   private $switchboard;
 
-  public function __construct(Switchboard $switchboard) {
+  /**
+   * @var int
+   */
+  private $options;
+
+  public function __construct(Switchboard $switchboard, int $options = 0) {
     $this->switchboard = $switchboard;
+    $this->options = $options;
+  }
+
+  public function getOptions(): int {
+    return $this->options;
+  }
+
+  public function setOptions(int $options): self {
+    $this->options = $options;
+
+    return $this;
   }
 
   public function get(string $id): Feature {
@@ -27,6 +43,9 @@ final class Operator implements \JsonSerializable {
   public function add(Feature $feature): self {
     if (static::has($feature)) {
       throw new \InvalidArgumentException(sprintf('The feature you are trying to add already exists in the switchboard: %s', $feature));
+    }
+    if (!$this->options & FeatureSwitchOptions::ALLOW_UNREADY_LIVE && !$feature->isReady() && $feature->isLive()) {
+      throw new FeatureNotReadyException($feature);
     }
     $this->switchboard[$feature->getId()] = $feature;
 

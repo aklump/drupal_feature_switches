@@ -3,6 +3,8 @@
 namespace Drupal\Tests\feature_switches;
 
 use Drupal\feature_switches\Feature;
+use Drupal\feature_switches\FeatureNotReadyException;
+use Drupal\feature_switches\FeatureSwitchOptions;
 use Drupal\feature_switches\Operator;
 use Drupal\feature_switches\Switchboard;
 use PHPUnit\Framework\TestCase;
@@ -10,9 +12,33 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \Drupal\feature_switches\Operator
  * @uses   \Drupal\feature_switches\Feature
+ * @uses   \Drupal\feature_switches\FeatureNotReadyException
+ * @uses   \Drupal\feature_switches\FeatureSwitchOptions
  */
 class OperatorTest extends TestCase {
 
+  public function testGetAndSetOptionsWorkAsExpected() {
+    $operator = new Operator(new Switchboard());
+    $operator->setOptions(FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+    $this->assertSame(1, $operator->getOptions() & FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+  }
+
+  public function testNotReadySetIsLiveWorksUsingAllowUnreadyLiveOption() {
+    $operator = new Operator(new Switchboard(), FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+    $operator->add(Feature::create('foo_not_ready')
+      ->setIsReady(FALSE)->setIsLive(TRUE)
+    );
+    $this->assertFalse($operator->get('foo_not_ready')->isReady());
+    $this->assertTrue($operator->get('foo_not_ready')->isLive());
+  }
+
+  public function testNotReadySetIsLiveThrowsWithoutUsingAllowUnreadyLiveOption() {
+    $operator = new Operator(new Switchboard());
+    $this->expectException(FeatureNotReadyException::class);
+    $operator->add(Feature::create('foo_not_ready')
+      ->setIsReady(FALSE)->setIsLive(TRUE)
+    );
+  }
 
   public function testJsonSerializeReturnsExpectedArray() {
     $operator = new Operator(new Switchboard());

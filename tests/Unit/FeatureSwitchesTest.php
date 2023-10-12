@@ -3,6 +3,7 @@
 namespace Drupal\Tests\feature_switches;
 
 use Drupal\feature_switches\Feature;
+use Drupal\feature_switches\FeatureSwitchOptions;
 use Drupal\feature_switches\Operator;
 use Drupal\feature_switches\FeatureSwitches;
 use PHPUnit\Framework\TestCase;
@@ -14,13 +15,24 @@ use PHPUnit\Framework\TestCase;
  */
 class FeatureSwitchesTest extends TestCase {
 
+  public function testGlobalSetOptionsSetsOnExistingGlobalOperator() {
+    $switches = FeatureSwitches::global();
+    FeatureSwitches::global()->setOptions(FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+    $this->assertSame($switches, FeatureSwitches::global());
+    $this->assertSame(1, $switches->getOptions() & FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+  }
+
   public function testSetIsLiveOnNonExistentHasNoEffect() {
     FeatureSwitches::global()->get('bogus')->setIsLive(TRUE);
     $this->assertFalse(FeatureSwitches::isLive('bogus'));
   }
 
-  public function testIsLiveReturnsFalseForLiveExistent() {
-    FeatureSwitches::global()->add(Feature::create('bar')->setIsLive(TRUE));
+  public function testIsLiveReturnsTrueForExistingLiveFeature() {
+    FeatureSwitches::global()->add(
+      Feature::create('bar')
+        ->setIsReady(TRUE)
+        ->setIsLive(TRUE)
+    );
     $this->assertTrue(FeatureSwitches::isLive('bar'));
   }
 

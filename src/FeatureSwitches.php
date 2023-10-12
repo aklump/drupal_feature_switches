@@ -8,7 +8,7 @@ namespace Drupal\feature_switches;
 class FeatureSwitches {
 
   /**
-   * @var \Drupal\feature_switches\Switchboard|null
+   * @var \Drupal\feature_switches\Operator;
    */
   static private $sharedList;
 

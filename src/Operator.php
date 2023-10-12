@@ -5,7 +5,7 @@ namespace Drupal\feature_switches;
 /**
  * Provide access to a Switchboard instance.
  */
-final class Operator {
+final class Operator implements \JsonSerializable {
 
   /**
    * @var \Drupal\feature_switches\Switchboard
@@ -41,4 +41,17 @@ final class Operator {
     return isset($this->switchboard[$feature_or_id]);
   }
 
+  public function jsonSerialize() {
+    $data = [];
+    foreach ($this->switchboard as $item) {
+      /** @var $item \Drupal\feature_switches\Feature */
+      $data[$item->getId()] = [
+        'description' => $item->getDescription(),
+        'ready' => $item->isReady(),
+        'live' => $item->isLive(),
+      ];
+    }
+
+    return $data;
+  }
 }

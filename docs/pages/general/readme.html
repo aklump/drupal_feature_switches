@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.0">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/style.css?ver=0.0.0">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.0">
+    <title>Feature Switches Module | Feature Switches Module</title>
+</head>
+<body class="my-5">
+
+<header class="header bg-light fixed-top p-2 pt-1">
+  <div class="container-md">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="header__breadcrumbs flex-shrink-0 flex-grow-1 me-3">
+        <nav aria-label="breadcrumb">
+  <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+      <a class="fw-bold" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/index.html">Feature Switches Module</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a class="fw-bold" href="#" data-bs-toggle="offcanvas"
+         data-bs-target="#table-of-contents"
+         aria-controls="table-of-contents">TOC</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html">General</a></li>
+  </ol>
+</nav>
+
+      </div>
+      <div class="header__tags me-3">  </div>
+      <div class="header__page-numbers flex-shrink-1">1
+        / 1</div>
+    </div>
+  </div>
+</header>
+
+<main class="container-md flex-column">
+  <div class="row mb-5 pt-5">
+    <article class="col">
+      <h1 class="mb-4 text-primary">Feature Switches Module</h1>
+      <h2>Summary</h2>
+<p>Allows you to flag features as ready or not, live or not from a central "switchboard". Based on these switches your codebase can act one way or another.</p>
+<h2>How to Define Feature Switches</h2>
+<ol>
+<li>Create a file in the same directory as <em>settings.php</em>. Call it <em>feature_switches.php</em>.</li>
+<li>Add to the top of <em>settings.php</em>, this line <code>require_once __DIR__ . '/feature_switches.php';</code></li>
+<li>Open <em>feature_switches.php</em> and add one or more features, like this:</li>
+</ol>
+<pre><code class="php">\Drupal\feature_switches\FeatureList::global()
+  -&gt;add(\Drupal\feature_switches\Feature::create('show_outlines')
+    -&gt;setDescription('Add outlines to all images.')
+    -&gt;setIsReady(TRUE)
+    -&gt;setIsLive(TRUE)
+  )
+  -&gt;add(\Drupal\feature_switches\Feature::create('user_files_download')
+    -&gt;setDescription('Allow users to download their own backups.')
+    -&gt;setIsReady(TRUE)
+    -&gt;setIsLive(FALSE)
+  );
+</code></pre>
+<blockquote class="blockquote"><p>For dynamic switch values--such as those depending on the DI container--you will need to set those switches later in the bootstrap of Drupal, for example inside an event listener.</p>
+</blockquote>
+<h2>Setting Switches Inside Event Listeners</h2>
+<p>If you have a switch that is dependent on the current user having, say, a given role, you will need to wait until that current user is loaded to calculate that value and set the switch since the container is not yet initialized in <em>settings.php</em> when you defined the switch. So to do that, you can listen for the <code>\Symfony\Component\HttpKernel\KernelEvents::REQUEST</code> event, and then set the value accordingly.</p>
+<p>It's possible to set a switch anywhere in your code, so this is just a tested suggestion.  This event is the earliest point when the user is available, in the Drupal bootstrap.</p>
+<h3>The Event Listener Class</h3>
+<p><em>my_module/src/EventSubscriber/MyModuleFeatureSwitches.php</em></p>
+<pre><code class="php">namespace Drupal\my_module\EventSubscriber;
+
+use Drupal\feature_switches\FeatureList;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+class MyModuleFeatureSwitches implements EventSubscriberInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getSubscribedEvents() {
+    $events = [];
+    // Best practice; use class_exists().
+    // @link https://www.drupal.org/project/drupal/issues/2825358
+    if (class_exists(KernelEvents::CLASS)) {
+      $events[KernelEvents::REQUEST][] = ['setUserDependentFeatureSwitches', 0];
+    }
+
+    return $events;
+  }
+
+  /**
+   * Respond to a new request event.
+   *
+   * @param RequestEvent $event
+   *   A new event instance.
+   */
+  public function setUserDependentFeatureSwitches(RequestEvent $event) {
+    $early_access = in_array('early_access', \Drupal::currentUser()
+      -&gt;getRoles(TRUE));
+    FeatureList::global()
+      -&gt;get('user_files_download')
+      -&gt;setIsLive($early_access);
+  }
+
+}
+</code></pre>
+<h3>Make a Service Class Entry</h3>
+<p><em>my_module.services.yml</em></p>
+<pre><code class="yaml">services:
+  my_module.feature_switches:
+    class: \Drupal\my_module\EventSubscriber\MyModuleFeatureSwitches
+    tags: [ { name: event_subscriber } ]
+
+</code></pre>
+<h2>Using Your Feature Switches</h2>
+<p>The whole point of this module to is allow your codebase to react differently based on a feature being live or not. It's quite simple once your features have been created to check them.</p>
+<h3>Do Something When the Feature Is Live</h3>
+<pre><code class="php">if (\Drupal\feature_switches\FeatureList::isLive('user_files_download')) {
+  // Proceed with the process...
+}
+</code></pre>
+<h3>Access the Feature Info</h3>
+<pre><code class="php">/** @var \Drupal\feature_switches\Feature $foo_feature */
+$download_feature = \Drupal\feature_switches\FeatureList::global()-&gt;get('download');
+$download_feature-&gt;getId();
+$download_feature-&gt;getDescription();
+$download_feature-&gt;isReady();
+$download_feature-&gt;isLive();
+</code></pre>
+    </article>
+  </div>
+</main>
+
+  <footer class="footer d-flex justify-content-center">
+    <div class="flex-column justify-content-center">
+                  Version:
+          <strong>0.0.0</strong>
+          &bull;
+                Last Update: <strong>10/12/2023</strong>
+    </div>
+  </footer>
+
+
+<nav class="nav d-flex justify-content-center align-items-center
+  fixed-bottom">
+  <div class="btn-group flex-fill">
+              <a href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html" class="btn nav__prev-chapter btn-secondary"><i class="bi
+      bi-caret-left-fill"></i> Feature Switches Module</a>
+  
+    
+              <span class="btn nav__prev-page js-nav__prev-page
+    btn-primary"></span>
+  
+    
+    <a class="nav__toc btn btn-light" href="#"
+       data-bs-toggle="offcanvas"
+       data-bs-target="#table-of-contents"
+       aria-controls="table-of-contents"><i class="bi
+           bi-list-ol"></i></a>
+    
+              <span class="btn nav__next-page js-nav__next-page
+    btn-primary"></span>
+  
+    
+              <span class="btn nav__next-chapter btn-secondary "></span>
+  
+  </div>
+</nav>
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="table-of-contents"
+     aria-labelledby="table-of-contents__title" data-bs-keyboard="true">
+  <div class="offcanvas-header">
+    <h1 class="h6 offcanvas-title js-chapter-list-title"
+        id="table-of-contents__title">All
+      Chapters
+      &amp; Pages</h1>
+    <h1 class="d-none h6 offcanvas-title js-search-results-title"
+        id="table-of-contents__title">Search Results</h1>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+          <input class="js-search form-control mb-4" type="search"
+             placeholder="Search docs..."
+             aria-label="Search">
+      <div class="js-search-results d-none">
+        <h2 class="h4 mt-4">Matched Pages</h2>
+        <ol class="list-unstyled">
+                                              <li data-page="readme" value="1">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html">Feature Switches Module<span
+              class="js-search-score
+              badge
+              bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
+    </li>
+  
+                              </ol>
+      </div>
+        
+    <div class="js-chapter-list">
+              <h2 class="h4 mt-4">General</h2>
+        <ol>
+                                <li data-page="readme" value="1">
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html">Feature Switches Module</a>&nbsp;[General]
+    </li>
+  
+                  </ol>
+          </div>
+  </div>
+</div>
+<div class="modal fade" id="modal" tabindex="-1"
+     aria-labelledby="modal-title" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="js-modal-title modal-title" id="modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mt-1 mb-4">
+                  </p>
+        
+                
+        <ul class="list-group list-group-flush">
+                                    <a class="list-group-item list-group-item-action"
+                 data-tags="[]" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html">Feature Switches Module</a>
+                              </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.0"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/dist/lunr.js?ver=0.0.0"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/knowledge.min.js?ver=0.0.0"></script>
+
+</body>
+</html>

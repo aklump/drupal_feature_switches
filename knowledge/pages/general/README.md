@@ -1,3 +1,8 @@
+<!--
+id: readme
+tags: ''
+-->
+
 # Feature Switches Module
 
 ## Summary

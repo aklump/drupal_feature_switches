@@ -1,0 +1,6 @@
+page_order:
+  - readme
+  - changelog
+  - event_listeners
+  - settings
+  - usage

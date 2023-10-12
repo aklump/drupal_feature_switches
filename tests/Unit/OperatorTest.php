@@ -13,6 +13,53 @@ use PHPUnit\Framework\TestCase;
  */
 class OperatorTest extends TestCase {
 
+
+  public function testJsonSerializeReturnsExpectedArray() {
+    $operator = new Operator(new Switchboard());
+    $operator
+      ->add(Feature::create('foo')
+        ->setDescription('Lorem foo.')
+        ->setIsReady(FALSE)
+        ->setIsLive(FALSE)
+      )
+      ->add(Feature::create('bar')
+        ->setDescription('Lorem bar.')
+        ->setIsReady(TRUE)
+        ->setIsLive(FALSE)
+      )->add(Feature::create('baz')
+        ->setDescription('Lorem baz.')
+        ->setIsReady(TRUE)
+        ->setIsLive(TRUE)
+      );
+
+    $data = $operator->jsonSerialize();
+    $this->assertCount(3, $data);
+
+    $this->assertSame('Lorem foo.', $data['foo']['description']);
+    $this->assertFalse($data['foo']['ready']);
+    $this->assertFalse($data['foo']['live']);
+
+    $this->assertSame('Lorem bar.', $data['bar']['description']);
+    $this->assertTrue($data['bar']['ready']);
+    $this->assertFalse($data['bar']['live']);
+
+    $this->assertSame('Lorem baz.', $data['baz']['description']);
+    $this->assertTrue($data['baz']['ready']);
+    $this->assertTrue($data['baz']['live']);
+  }
+
+
+  public function testJsonSerializeReturnsFooElementWithExpectedKeys() {
+    $operator = new Operator(new Switchboard());
+    $operator->add(Feature::create('alpha'));
+    $data = $operator->jsonSerialize();
+    $this->assertCount(1, $data);
+    $this->assertArrayHasKey('alpha', $data);
+    $this->assertArrayHasKey('description', $data['alpha']);
+    $this->assertArrayHasKey('ready', $data['alpha']);
+    $this->assertArrayHasKey('live', $data['alpha']);
+  }
+
   public function testAddingAgainThrows() {
     $switchboard = new Switchboard();
     $feature = new Feature('foo');

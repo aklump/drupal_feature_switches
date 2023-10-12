@@ -55,6 +55,7 @@ class OperatorTest extends TestCase {
     $data = $operator->jsonSerialize();
     $this->assertCount(1, $data);
     $this->assertArrayHasKey('alpha', $data);
+    $this->assertArrayHasKey('id', $data['alpha']);
     $this->assertArrayHasKey('description', $data['alpha']);
     $this->assertArrayHasKey('ready', $data['alpha']);
     $this->assertArrayHasKey('live', $data['alpha']);

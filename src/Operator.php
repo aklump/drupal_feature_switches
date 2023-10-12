@@ -46,6 +46,7 @@ final class Operator implements \JsonSerializable {
     foreach ($this->switchboard as $item) {
       /** @var $item \Drupal\feature_switches\Feature */
       $data[$item->getId()] = [
+        'id' => $item->getId(),
         'description' => $item->getDescription(),
         'ready' => $item->isReady(),
         'live' => $item->isLive(),

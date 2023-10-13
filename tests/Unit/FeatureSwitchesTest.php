@@ -15,29 +15,39 @@ use PHPUnit\Framework\TestCase;
  */
 class FeatureSwitchesTest extends TestCase {
 
-  public function testGlobalSetOptionsSetsOnExistingGlobalOperator() {
-    $switches = FeatureSwitches::global();
-    FeatureSwitches::global()->setOptions(FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
-    $this->assertSame($switches, FeatureSwitches::global());
+  public function testHasReturnsAsExpected() {
+    $this->assertFalse(FeatureSwitches::has('firmament'));
+    $feature = Feature::create('firmament');
+    FeatureSwitches::getOperator()->add($feature);
+    $this->assertTrue(FeatureSwitches::has('firmament'));
+    $this->assertTrue(FeatureSwitches::has($feature));
+  }
+
+  public function testSetOptionsSetsOnExistingGlobalOperator() {
+    $switches = FeatureSwitches::getOperator();
+    $this->assertSame($switches, FeatureSwitches::setOptions(FeatureSwitchOptions::ALLOW_UNREADY_LIVE));
+    $this->assertSame($switches, FeatureSwitches::getOperator());
     $this->assertSame(1, $switches->getOptions() & FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
   }
 
   public function testSetIsLiveOnNonExistentHasNoEffect() {
-    FeatureSwitches::global()->get('bogus')->setIsLive(TRUE);
+    FeatureSwitches::get('bogus')->setIsLive(TRUE);
     $this->assertFalse(FeatureSwitches::isLive('bogus'));
   }
 
   public function testIsLiveReturnsTrueForExistingLiveFeature() {
-    FeatureSwitches::global()->add(
-      Feature::create('bar')
-        ->setIsReady(TRUE)
-        ->setIsLive(TRUE)
-    );
+    $operator = FeatureSwitches::getOperator();
+    $this->assertSame($operator, FeatureSwitches::getOperator()
+      ->add(
+        Feature::create('bar')
+          ->setIsReady(TRUE)
+          ->setIsLive(TRUE)
+      ));
     $this->assertTrue(FeatureSwitches::isLive('bar'));
   }
 
   public function testIsLiveReturnsFalseForNonLiveExistent() {
-    FeatureSwitches::global()->add(Feature::create('foo'));
+    FeatureSwitches::getOperator()->add(Feature::create('foo'));
     $this->assertFalse(FeatureSwitches::isLive('foo'));
   }
 
@@ -46,8 +56,8 @@ class FeatureSwitchesTest extends TestCase {
   }
 
   public function testGetReturnsSameInstanceCalledMultipleTimes() {
-    $foo = FeatureSwitches::global();
-    $this->assertSame($foo, FeatureSwitches::global());
+    $foo = FeatureSwitches::getOperator();
+    $this->assertSame($foo, FeatureSwitches::getOperator());
     $this->assertInstanceOf(Operator::class, $foo);
   }
 

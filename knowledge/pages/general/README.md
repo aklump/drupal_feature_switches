@@ -16,7 +16,7 @@ Allows you to flag features as ready or not, live or not from a central "switchb
 3. Open _feature\_switches.php_ and add one or more features, like this:
 
 ```php
-\Drupal\feature_switches\FeatureSwitches::global()
+\Drupal\feature_switches\FeatureSwitches::getOperator()
   ->add(\Drupal\feature_switches\Feature::create('show_outlines')
     ->setDescription('Add outlines to all images.')
     ->setIsReady(TRUE)
@@ -36,8 +36,7 @@ Allows you to flag features as ready or not, live or not from a central "switchb
 This will be enforced unless you use the `FeatureSwitchOptions::ALLOW_UNREADY_LIVE` option like this:
 
 ```php
-FeatureSwitches::global()
-  ->setOptions(\Drupal\feature_switches\FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+FeatureSwitches::setOptions(\Drupal\feature_switches\FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
 ```
 
 It has to be done before trying to add the unready, live feature, otherwise a `Drupal\feature_switches\FeatureNotReadyException` is thrown.
@@ -89,15 +88,13 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
   public function setUserDependentFeatureSwitches(RequestEvent $event) {
     $early_access = in_array('early_access', \Drupal::currentUser()
       ->getRoles(TRUE));
-    FeatureSwitches::global()
-      ->get('user_files_download')
-      ->setIsLive($early_access);
+    FeatureSwitches::get('user_files_download')->setIsLive($early_access);
   }
 
 }
 ```
 
-> `FeatureSwitches::global()->get('bogus')->setIsLive(TRUE)` will fail quietly, when `bogus` is not added. In other words `setIsLive()` will have no effect. If you call `FeatureSwitches::global()->isLive('bogus)` it will return `FALSE`.
+> `FeatureSwitches::get('bogus')->setIsLive(TRUE)` will fail quietly, when `bogus` is not added. In other words `setIsLive()` will have no effect. If you call `FeatureSwitches::isLive('bogus)` it will return `FALSE`.
 
 ### Make a Service Class Entry
 
@@ -137,7 +134,7 @@ if (\Drupal\feature_switches\FeatureSwitches::isLive('user_files_download')) {
 
 ```php
 /** @var \Drupal\feature_switches\Feature $foo_feature */
-$download_feature = \Drupal\feature_switches\FeatureSwitches::global()->get('download');
+$download_feature = \Drupal\feature_switches\FeatureSwitches::get('download');
 $download_feature->getId();
 $download_feature->getDescription();
 $download_feature->isReady();

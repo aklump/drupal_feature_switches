@@ -44,7 +44,7 @@ final class Operator implements \JsonSerializable {
     if (static::has($feature)) {
       throw new FeatureAlreadyAddedException($feature);
     }
-    if (!$this->options & FeatureSwitchOptions::ALLOW_UNREADY_LIVE && !$feature->isReady() && $feature->isLive()) {
+    if ($this->options & OperatorOptions::REQUIRE_READY_LIVE && !$feature->isReady() && $feature->isLive()) {
       throw new FeatureNotReadyException($feature);
     }
     $this->switchboard[$feature->getId()] = $feature;

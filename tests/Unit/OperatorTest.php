@@ -4,7 +4,7 @@ namespace Drupal\Tests\feature_switches;
 
 use Drupal\feature_switches\Feature;
 use Drupal\feature_switches\FeatureNotReadyException;
-use Drupal\feature_switches\FeatureSwitchOptions;
+use Drupal\feature_switches\OperatorOptions;
 use Drupal\feature_switches\Operator;
 use Drupal\feature_switches\Switchboard;
 use PHPUnit\Framework\TestCase;
@@ -14,18 +14,18 @@ use PHPUnit\Framework\TestCase;
  * @covers   \Drupal\feature_switches\FeatureAlreadyAddedException
  * @covers   \Drupal\feature_switches\FeatureNotReadyException
  * @uses     \Drupal\feature_switches\Feature
- * @uses     \Drupal\feature_switches\FeatureSwitchOptions
+ * @uses     \Drupal\feature_switches\OperatorOptions
  */
 class OperatorTest extends TestCase {
 
   public function testGetAndSetOptionsWorkAsExpected() {
     $operator = new Operator(new Switchboard());
-    $operator->setOptions(FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
-    $this->assertSame(1, $operator->getOptions() & FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+    $operator->setOptions(OperatorOptions::REQUIRE_READY_LIVE);
+    $this->assertSame(1, $operator->getOptions() & OperatorOptions::REQUIRE_READY_LIVE);
   }
 
-  public function testNotReadySetIsLiveWorksUsingAllowUnreadyLiveOption() {
-    $operator = new Operator(new Switchboard(), FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+  public function testNotReadySetIsLiveWorksByDefault() {
+    $operator = new Operator(new Switchboard());
     $operator->add(Feature::create('foo_not_ready')
       ->setIsReady(FALSE)->setIsLive(TRUE)
     );
@@ -33,9 +33,10 @@ class OperatorTest extends TestCase {
     $this->assertTrue($operator->get('foo_not_ready')->isLive());
   }
 
-  public function testNotReadySetIsLiveThrowsWithoutUsingAllowUnreadyLiveOption() {
-    $operator = new Operator(new Switchboard());
+  public function testNotReadySetIsLiveThrowsWhenUsingRequireReadyLiveOption() {
+    $operator = new Operator(new Switchboard(), OperatorOptions::REQUIRE_READY_LIVE);
     $this->expectException(FeatureNotReadyException::class);
+    $this->expectExceptionMessageMatches('/OperatorOptions::REQUIRE_READY_LIVE/');
     $operator->add(Feature::create('foo_not_ready')
       ->setIsReady(FALSE)->setIsLive(TRUE)
     );

@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.4">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/style.css?ver=0.0.4">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.4">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.5">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/style.css?ver=0.0.5">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.5">
     <title>Feature Switches Module | Feature Switches Module</title>
 </head>
 <body class="my-5">
@@ -64,11 +64,11 @@
 </code></pre>
 <blockquote class="blockquote"><p>For dynamic switch values--such as those depending on the DI container--you will need to set those switches later in the bootstrap of Drupal, for example inside an event listener.</p>
 </blockquote>
-<h3>Unready Features Cannot Be Live</h3>
-<p>This will be enforced unless you use the <code>FeatureSwitchOptions::ALLOW_UNREADY_LIVE</code> option like this:</p>
-<pre><code class="php">FeatureSwitches::setOptions(\Drupal\feature_switches\FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+<h3>Enforcing All Live Features are Also Ready</h3>
+<p>To require that any live feature must also be marked as ready, set the <code>\Drupal\feature_switches\OperatorOptions::REQUIRE_READY_LIVE</code> option. Doing so will cause a <code>\Drupal\feature_switches\FeatureNotReadyException</code> to be thrown if you try to add a feature that is live but not ready.</p>
+<pre><code class="php">FeatureSwitches::setOptions(\Drupal\feature_switches\OperatorOptions::REQUIRE_READY_LIVE);
 </code></pre>
-<p>It has to be done before trying to add the unready, live feature, otherwise a <code>Drupal\feature_switches\FeatureNotReadyException</code> is thrown.</p>
+<p>This has to be done before adding features, otherwise no exceptions are thrown.</p>
 <h2>Setting Switches Inside Event Listeners</h2>
 <p>If you have a switch that is dependent on the current user having, say, a given role, you will need to wait until that current user is loaded to calculate that value and set the switch since the container is not yet initialized in <em>settings.php</em> when you defined the switch. So to do that, you can listen for the <code>\Symfony\Component\HttpKernel\KernelEvents::REQUEST</code> event, and then set the value accordingly.</p>
 <p>It's possible to set a switch anywhere in your code, so this is just a tested suggestion. This event is the earliest point when the user is available, in the Drupal bootstrap.</p>
@@ -151,9 +151,9 @@ $download_feature-&gt;isLive();
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
                   Version:
-          <strong>0.0.4</strong>
+          <strong>0.0.5</strong>
           &bull;
-                Last Update: <strong>10/13/2023</strong>
+                Last Update: <strong>10/14/2023</strong>
     </div>
   </footer>
 
@@ -260,9 +260,9 @@ $download_feature-&gt;isLive();
   </div>
 </div>
 
-  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.4"></script>
-  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/dist/lunr.js?ver=0.0.4"></script>
-  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/knowledge.min.js?ver=0.0.4"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.5"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/dist/lunr.js?ver=0.0.5"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/knowledge.min.js?ver=0.0.5"></script>
 
 </body>
 </html>

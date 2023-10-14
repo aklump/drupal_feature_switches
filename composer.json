@@ -1,6 +1,6 @@
 {
     "name": "aklump_drupal/feature_switches",
-    "description": "Provides custom Drupal integration for Feature Switches.",
+    "description": "Provides a means to toggle website features on and off.",
     "type": "drupal-custom-module",
     "license": "GPL-2.0+",
     "homepage": "https://drupal.org/project/feature_switches",
@@ -12,7 +12,8 @@
         }
     ],
     "require-dev": {
-        "phpunit/phpunit": "^9.6"
+        "phpunit/phpunit": "^9.6",
+        "aklump/phpswap": "^0.0.6"
     },
     "autoload": {
         "psr-4": {

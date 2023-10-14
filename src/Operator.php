@@ -60,6 +60,7 @@ final class Operator implements \JsonSerializable {
     return isset($this->switchboard[$feature_or_id]);
   }
 
+  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     $data = [];
     foreach ($this->switchboard as $item) {

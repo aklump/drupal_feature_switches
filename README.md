@@ -26,15 +26,15 @@ Allows you to flag features as ready or not, live or not from a central "switchb
 
 > For dynamic switch values--such as those depending on the DI container--you will need to set those switches later in the bootstrap of Drupal, for example inside an event listener.
 
-### Unready Features Cannot Be Live
+### Enforcing All Live Features are Also Ready
 
-This will be enforced unless you use the `FeatureSwitchOptions::ALLOW_UNREADY_LIVE` option like this:
+To require that any live feature must also be marked as ready, set the `\Drupal\feature_switches\OperatorOptions::REQUIRE_READY_LIVE` option. Doing so will cause a `\Drupal\feature_switches\FeatureNotReadyException` to be thrown if you try to add a feature that is live but not ready.
 
 ```php
-FeatureSwitches::setOptions(\Drupal\feature_switches\FeatureSwitchOptions::ALLOW_UNREADY_LIVE);
+FeatureSwitches::setOptions(\Drupal\feature_switches\OperatorOptions::REQUIRE_READY_LIVE);
 ```
 
-It has to be done before trying to add the unready, live feature, otherwise a `Drupal\feature_switches\FeatureNotReadyException` is thrown.
+This has to be done before adding features, otherwise no exceptions are thrown.
 
 ## Setting Switches Inside Event Listeners
 

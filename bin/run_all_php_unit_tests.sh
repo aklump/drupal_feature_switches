@@ -3,6 +3,8 @@ s="${BASH_SOURCE[0]}";[[ "$s" ]] || s="${(%):-%N}";while [ -h "$s" ];do d="$(cd 
 
 cd "$__DIR__/.."
 
+! [ -e ./vendor/bin/phpswap ] && echo "You seem to be missing this: https://github.com/aklump/phpswap" && echo "Try running: composer require --dev aklump/phpswap" && exit 1
+
 verbose=''
 if [[ "${*}" == *'-v'* ]]; then
   verbose='-v'

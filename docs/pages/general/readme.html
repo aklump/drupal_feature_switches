@@ -4,9 +4,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.5">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/style.css?ver=0.0.5">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.5">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.6">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/style.css?ver=0.0.6">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.6">
     <title>Feature Switches Module | Feature Switches Module</title>
 </head>
 <body class="my-5">
@@ -44,6 +44,24 @@
       <h1 class="mb-4 text-primary">Feature Switches Module</h1>
       <h2>Summary</h2>
 <p>Allows you to flag features as ready or not, live or not from a central "switchboard". Based on these switches your codebase can act one way or another.</p>
+<h2>Installation with Composer</h2>
+<ol>
+<li>Add to the <code>repositories</code> section of <em>composer.json</em>.</li>
+</ol>
+<pre><code class="json">{
+  "repositories": [
+    {
+      "type": "github",
+      "url": "https://github.com/aklump/drupal_feature_switches"
+    }
+  ]
+}
+</code></pre>
+<ol>
+<li><code>composer require aklump_drupal/feature_switches</code></li>
+<li>See section below about declaring as a Drupal dependency.</li>
+<li>Add this to <em>.gitignore</em>: <code>/web/modules/custom/feature_switches</code></li>
+</ol>
 <h2>How to Define Feature Switches</h2>
 <ol>
 <li>Create a file in the same directory as <em>settings.php</em>. Call it <em>feature_switches.php</em>.</li>
@@ -54,12 +72,12 @@
   -&gt;add(\Drupal\feature_switches\Feature::create('show_outlines')
     -&gt;setDescription('Add outlines to all images.')
     -&gt;setIsReady(TRUE)
-    -&gt;setIsLive(TRUE)
+    -&gt;turnOn()
   )
   -&gt;add(\Drupal\feature_switches\Feature::create('user_files_download')
     -&gt;setDescription('Allow users to download their own backups.')
     -&gt;setIsReady(TRUE)
-    -&gt;setIsLive(FALSE)
+    -&gt;turnOff()
   );
 </code></pre>
 <blockquote class="blockquote"><p>For dynamic switch values--such as those depending on the DI container--you will need to set those switches later in the bootstrap of Drupal, for example inside an event listener.</p>
@@ -113,7 +131,7 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
 
 }
 </code></pre>
-<blockquote class="blockquote"><p><code>FeatureSwitches::get('bogus')-&gt;setIsLive(TRUE)</code> will fail quietly, when <code>bogus</code> is not added. In other words <code>setIsLive()</code> will have no effect. If you call <code>FeatureSwitches::isLive('bogus)</code> it will return <code>FALSE</code>.</p>
+<blockquote class="blockquote"><p><code>FeatureSwitches::get('bogus')-&gt;turnOn()</code> will fail quietly, when <code>bogus</code> is not added. In other words <code>setIsLive()</code> will have no effect. If you call <code>FeatureSwitches::isLive('bogus)</code> it will return <code>FALSE</code>.</p>
 </blockquote>
 <h3>Make a Service Class Entry</h3>
 <p><em>my_module.services.yml</em></p>
@@ -151,9 +169,9 @@ $download_feature-&gt;isLive();
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
                   Version:
-          <strong>0.0.5</strong>
+          <strong>0.0.6</strong>
           &bull;
-                Last Update: <strong>10/14/2023</strong>
+                Last Update: <strong>10/25/2023</strong>
     </div>
   </footer>
 
@@ -260,9 +278,9 @@ $download_feature-&gt;isLive();
   </div>
 </div>
 
-  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.5"></script>
-  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/dist/lunr.js?ver=0.0.5"></script>
-  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/knowledge.min.js?ver=0.0.5"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.6"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/dist/lunr.js?ver=0.0.6"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/knowledge.min.js?ver=0.0.6"></script>
 
 </body>
 </html>

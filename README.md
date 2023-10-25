@@ -15,12 +15,12 @@ Allows you to flag features as ready or not, live or not from a central "switchb
   ->add(\Drupal\feature_switches\Feature::create('show_outlines')
     ->setDescription('Add outlines to all images.')
     ->setIsReady(TRUE)
-    ->setIsLive(TRUE)
+    ->turnOn()
   )
   ->add(\Drupal\feature_switches\Feature::create('user_files_download')
     ->setDescription('Allow users to download their own backups.')
     ->setIsReady(TRUE)
-    ->setIsLive(FALSE)
+    ->turnOff()
   );
 ```
 
@@ -89,7 +89,7 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
 }
 ```
 
-> `FeatureSwitches::get('bogus')->setIsLive(TRUE)` will fail quietly, when `bogus` is not added. In other words `setIsLive()` will have no effect. If you call `FeatureSwitches::isLive('bogus)` it will return `FALSE`.
+> `FeatureSwitches::get('bogus')->turnOn()` will fail quietly, when `bogus` is not added. In other words `setIsLive()` will have no effect. If you call `FeatureSwitches::isLive('bogus)` it will return `FALSE`.
 
 ### Make a Service Class Entry
 

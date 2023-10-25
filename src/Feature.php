@@ -34,6 +34,21 @@ class Feature {
     return $this->isLive;
   }
 
+  public function turnOn(): self {
+    $this->isLive = TRUE;
+
+    return $this;
+  }
+
+  public function turnOff(): self {
+    $this->isLive = FALSE;
+
+    return $this;
+  }
+
+  /**
+   * @deprecated Use ::turnOn() and ::turnOff().
+   */
   public function setIsLive(bool $isLive): self {
     $this->isLive = $isLive;
 

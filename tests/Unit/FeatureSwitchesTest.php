@@ -30,10 +30,11 @@ class FeatureSwitchesTest extends TestCase {
     $this->assertSame(1, $switches->getOptions() & OperatorOptions::REQUIRE_READY_LIVE);
   }
 
-  public function testSetIsLiveOnNonExistentHasNoEffect() {
-    FeatureSwitches::get('bogus')->setIsLive(TRUE);
+  public function testTurnOnOnNonExistentHasNoEffect() {
+    FeatureSwitches::get('bogus')->turnOn();
     $this->assertFalse(FeatureSwitches::isLive('bogus'));
   }
+
 
   public function testIsLiveReturnsTrueForExistingLiveFeature() {
     $operator = FeatureSwitches::getOperator();
@@ -41,7 +42,7 @@ class FeatureSwitchesTest extends TestCase {
       ->add(
         Feature::create('bar')
           ->setIsReady(TRUE)
-          ->setIsLive(TRUE)
+          ->turnOn()
       ));
     $this->assertTrue(FeatureSwitches::isLive('bar'));
   }

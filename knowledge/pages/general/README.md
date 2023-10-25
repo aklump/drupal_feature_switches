@@ -9,6 +9,25 @@ tags: ''
 
 Allows you to flag features as ready or not, live or not from a central "switchboard". Based on these switches your codebase can act one way or another.
 
+## Installation with Composer
+
+1. Add to the `repositories` section of _composer.json_.
+
+```json
+{
+  "repositories": [
+    {
+      "type": "github",
+      "url": "https://github.com/aklump/drupal_feature_switches"
+    }
+  ]
+}
+```
+
+1. `composer require aklump_drupal/feature_switches`
+2. See section below about declaring as a Drupal dependency.
+3. Add this to _.gitignore_: `/web/modules/custom/feature_switches`
+
 ## How to Define Feature Switches
 
 1. Create a file in the same directory as _settings.php_. Call it _feature\_switches.php_.
@@ -20,12 +39,12 @@ Allows you to flag features as ready or not, live or not from a central "switchb
   ->add(\Drupal\feature_switches\Feature::create('show_outlines')
     ->setDescription('Add outlines to all images.')
     ->setIsReady(TRUE)
-    ->setIsLive(TRUE)
+    ->turnOn()
   )
   ->add(\Drupal\feature_switches\Feature::create('user_files_download')
     ->setDescription('Allow users to download their own backups.')
     ->setIsReady(TRUE)
-    ->setIsLive(FALSE)
+    ->turnOff()
   );
 ```
 
@@ -94,7 +113,7 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
 }
 ```
 
-> `FeatureSwitches::get('bogus')->setIsLive(TRUE)` will fail quietly, when `bogus` is not added. In other words `setIsLive()` will have no effect. If you call `FeatureSwitches::isLive('bogus)` it will return `FALSE`.
+> `FeatureSwitches::get('bogus')->turnOn()` will fail quietly, when `bogus` is not added. In other words `setIsLive()` will have no effect. If you call `FeatureSwitches::isLive('bogus)` it will return `FALSE`.
 
 ### Make a Service Class Entry
 

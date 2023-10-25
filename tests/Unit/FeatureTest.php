@@ -29,14 +29,14 @@ class FeatureTest extends TestCase {
     $this->assertFalse((new Feature('bar'))->isReady());
   }
 
-  public function testCanSetIsLiveFalse() {
+  public function testCanTurnOff() {
     $feature = new Feature('foo');
-    $this->assertTrue($feature->setIsLive(TRUE)->isLive());
-    $this->assertFalse($feature->setIsLive(FALSE)->isLive());
+    $this->assertTrue($feature->turnOn()->isLive());
+    $this->assertFalse($feature->turnOff()->isLive());
   }
 
-  public function testCanSetIsLiveTrue() {
-    $this->assertTrue((new Feature('foo'))->setIsLive(TRUE)->isLive());
+  public function testCanTurnOn() {
+    $this->assertTrue((new Feature('foo'))->turnOn()->isLive());
   }
 
   public function testIsLiveFalseByDefault() {

@@ -24,21 +24,21 @@ class OperatorTest extends TestCase {
     $this->assertSame(1, $operator->getOptions() & OperatorOptions::REQUIRE_READY_LIVE);
   }
 
-  public function testNotReadySetIsLiveWorksByDefault() {
+  public function testNotReadyTurnOnWorksByDefault() {
     $operator = new Operator(new Switchboard());
     $operator->add(Feature::create('foo_not_ready')
-      ->setIsReady(FALSE)->setIsLive(TRUE)
+      ->setIsReady(FALSE)->turnOn()
     );
     $this->assertFalse($operator->get('foo_not_ready')->isReady());
     $this->assertTrue($operator->get('foo_not_ready')->isLive());
   }
 
-  public function testNotReadySetIsLiveThrowsWhenUsingRequireReadyLiveOption() {
+  public function testNotReadyTurnOnThrowsWhenUsingRequireReadyLiveOption() {
     $operator = new Operator(new Switchboard(), OperatorOptions::REQUIRE_READY_LIVE);
     $this->expectException(FeatureNotReadyException::class);
     $this->expectExceptionMessageMatches('/OperatorOptions::REQUIRE_READY_LIVE/');
     $operator->add(Feature::create('foo_not_ready')
-      ->setIsReady(FALSE)->setIsLive(TRUE)
+      ->setIsReady(FALSE)->turnOn()
     );
   }
 
@@ -48,16 +48,16 @@ class OperatorTest extends TestCase {
       ->add(Feature::create('foo')
         ->setDescription('Lorem foo.')
         ->setIsReady(FALSE)
-        ->setIsLive(FALSE)
+        ->turnOff()
       )
       ->add(Feature::create('bar')
         ->setDescription('Lorem bar.')
         ->setIsReady(TRUE)
-        ->setIsLive(FALSE)
+        ->turnOff()
       )->add(Feature::create('baz')
         ->setDescription('Lorem baz.')
         ->setIsReady(TRUE)
-        ->setIsLive(TRUE)
+        ->turnOn()
       );
 
     $data = $operator->jsonSerialize();
@@ -100,7 +100,7 @@ class OperatorTest extends TestCase {
   public function testSwitchboardPersistsAcrossOperators() {
     $switchboard = new Switchboard();
     $feature = new Feature('foo');
-    $feature->setIsLive(TRUE)
+    $feature->turnOn()
       ->setIsReady(TRUE)
       ->setDescription('Lorem foo.');
     (new Operator($switchboard))->add($feature);

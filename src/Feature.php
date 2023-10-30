@@ -47,7 +47,8 @@ class Feature {
   }
 
   /**
-   * @deprecated Use ::turnOn() and ::turnOff().
+   * @see \Drupal\feature_switches\Feature::turnOn
+   * @see \Drupal\feature_switches\Feature::turnOff
    */
   public function setIsLive(bool $isLive): self {
     $this->isLive = $isLive;

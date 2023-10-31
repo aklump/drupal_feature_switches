@@ -7,7 +7,7 @@
       <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.7">
       <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/style.css?ver=0.0.7">
       <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.7">
-    <title>Changelog | Feature Switches Module</title>
+    <title>Developers | Feature Switches Module</title>
 </head>
 <body class="my-5">
 
@@ -32,7 +32,7 @@
 
       </div>
       <div class="header__tags me-3">  </div>
-      <div class="header__page-numbers flex-shrink-1">2
+      <div class="header__page-numbers flex-shrink-1">3
         / 3</div>
     </div>
   </div>
@@ -41,31 +41,23 @@
 <main class="container-md flex-column">
   <div class="row mb-5 pt-5">
     <article class="col">
-      <h1 class="mb-4 text-primary">Changelog</h1>
-      <p>All notable changes to this project will be documented in this file.</p>
-<p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
-and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<h2>[Unreleased]</h2>
-<ul>
-<li>None</li>
-</ul>
-<h2>[0.0.5] - 2023-10-13</h2>
-<h3>Changed</h3>
-<ul>
-<li><code>FeatureSwitchOptions::ALLOW_UNREADY_LIVE</code> -&gt; <code>OperatorOptions::REQUIRE_READY_LIVE</code> and inverted logic.</li>
-<li>The default behavior is now to allow unready to be live. You must set the option for the exception to throw.</li>
-</ul>
-<h2>[0.0.4] - 2023-10-13</h2>
-<h3>Added</h3>
-<ul>
-<li><code>\Drupal\feature_switches\FeatureSwitches::get()</code></li>
-<li><code>\Drupal\feature_switches\FeatureSwitches::has()</code></li>
-<li><code>\Drupal\feature_switches\FeatureSwitches::setOptions()</code></li>
-</ul>
-<h3>Changed</h3>
-<ul>
-<li><code>\Drupal\feature_switches\FeatureSwitches::global()</code> renamed to <code>\Drupal\feature_switches\FeatureSwitches::getOperator()</code></li>
-</ul>
+      <h1 class="mb-4 text-primary">Developers</h1>
+      <h2>PHPUnit Testing</h2>
+<pre><code class="php">  public static function setUpBeforeClass(): void {
+  
+    // Setup the operator her with your feature switches.
+    FeatureSwitches::getOperator()
+      -&gt;add(Feature::create('mailchimp')
+        -&gt;setIsReady(TRUE)
+      );
+  }
+  public function testSomethign() {
+  
+    // turn it on and off in a test.
+    FeatureSwitches::get('mailchimp')-&gt;setIsLive($feature_switch);
+    
+  }
+</code></pre>
     </article>
   </div>
 </main>
@@ -87,7 +79,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
       bi-caret-left-fill"></i> Feature Switches Module</a>
   
     
-              <a href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html" class="btn nav__prev-page js-nav__prev-page
+              <a href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/changelog.html" class="btn nav__prev-page js-nav__prev-page
     btn-primary"><i class="bi
       bi-caret-left-fill"></i></a>
   
@@ -98,9 +90,8 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
        aria-controls="table-of-contents"><i class="bi
            bi-list-ol"></i></a>
     
-              <a href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/developers.html" class="btn nav__next-page js-nav__next-page
-    btn-primary"><i class="bi bi-file-earmark"></i> Developers <i class="bi
-       bi-caret-right-fill"></i></a>
+              <span class="btn nav__next-page js-nav__next-page
+    btn-primary"></span>
   
     
               <span class="btn nav__next-chapter btn-secondary "></span>

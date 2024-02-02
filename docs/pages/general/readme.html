@@ -4,10 +4,10 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.7">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/style.css?ver=0.0.7">
-      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.7">
-    <title>Feature Switches Module | Feature Switches Module</title>
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/css/bootstrap.css?ver=0.0.8">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/style.css?ver=0.0.8">
+      <link rel="stylesheet" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap-icons/font/bootstrap-icons.min.css?ver=0.0.8">
+    <title>Feature Switches Drupal Module | Feature Switches Module</title>
 </head>
 <body class="my-5">
 
@@ -41,31 +41,35 @@
 <main class="container-md flex-column">
   <div class="row mb-5 pt-5">
     <article class="col">
-      <h1 class="mb-4 text-primary">Feature Switches Module</h1>
+      <h1 class="mb-4 text-primary">Feature Switches Drupal Module</h1>
       <h2>Summary</h2>
-<p>Allows you to flag features as ready or not, live or not from a central "switchboard". Based on these switches your codebase can act one way or another.</p>
-<h2>Installation with Composer</h2>
+<p>Allows you to flag features as ready/not ready and live/not live from a central "switchboard". Based on these switches your codebase can act one way or another.</p>
+<h2>Install with Composer</h2>
 <ol>
-<li>Add to the <code>repositories</code> section of <em>composer.json</em>.</li>
-</ol>
-<pre><code class="json">{
-  "repositories": [
-    {
-      "type": "github",
-      "url": "https://github.com/aklump/drupal_feature_switches"
-    }
-  ]
-}
+<li><p>Because this is an unpublished package, you must define it's repository in your project's <em>composer.json</em> file. Add the following to <em>composer.json</em>:</p>
+<pre><code class="json"> "repositories": [
+     {
+         "type": "github",
+         "url": "https://github.com/aklump/drupal_feature_switches"
+     }
+ ]
 </code></pre>
-<ol>
-<li><code>composer require aklump_drupal/feature_switches</code></li>
+</li>
+<li><p>Then <code>composer require aklump_drupal/feature_switches:^0.0</code></p>
+</li>
+<li><p>It will be installed to _web/modules/custom/feature<em>switches</em>, which should be excluded from source control.</p>
+</li>
+<li><p>Enable this module.</p>
+</li>
 <li>See section below about declaring as a Drupal dependency.</li>
-<li>Add this to <em>.gitignore</em>: <code>/web/modules/custom/feature_switches</code></li>
 </ol>
 <h2>How to Define Feature Switches</h2>
 <ol>
 <li>Create a file in the same directory as <em>settings.php</em>. Call it <em>feature_switches.php</em>.</li>
-<li>Add to <em>settings.php</em>, this line <code>include_once __DIR__ . '/feature_switches.php';</code>.  <strong>Note: you should add this AFTER <code>$config['system.logging']['error_level']</code> otherwise you may not see the expected error output, if your features are in error.</strong></li>
+<li><p>Add to <em>settings.php</em>, the following.  <strong>Note: you should add this AFTER <code>$config['system.logging']['error_level']</code> otherwise you may not see the expected error output, if your features are in error.</strong></p>
+<pre><code class="php"> include_once __DIR__ . '/feature_switches.php';
+</code></pre>
+</li>
 <li>Open <em>feature_switches.php</em> and add one or more features, like this:</li>
 </ol>
 <pre><code class="php">\Drupal\feature_switches\FeatureSwitches::getOperator()
@@ -148,7 +152,7 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
 
 </code></pre>
 <h2>Using Your Feature Switches</h2>
-<p>The whole point of this module to is allow your codebase to react differently based on a feature being live or not. It's quite simple once your features have been created to check them.</p>
+<p>The whole point of this module to is allow your codebase to react differently based on a feature being live or not. Once your features have been created, it's quite simple to check them.</p>
 <h3>Do Something When the Feature Is Live</h3>
 <pre><code class="php">if (\Drupal\feature_switches\FeatureSwitches::isLive('user_files_download')) {
   // Proceed with the process...
@@ -159,6 +163,8 @@ class MyModuleFeatureSwitches implements EventSubscriberInterface {
 $download_feature = \Drupal\feature_switches\FeatureSwitches::get('download');
 $download_feature-&gt;getId();
 $download_feature-&gt;getDescription();
+
+// Note: these two are synonymous.
 $download_feature-&gt;isReady();
 $download_feature-&gt;isLive();
 </code></pre>
@@ -169,9 +175,9 @@ $download_feature-&gt;isLive();
   <footer class="footer d-flex justify-content-center">
     <div class="flex-column justify-content-center">
                   Version:
-          <strong>0.0.7</strong>
+          <strong>0.0.8</strong>
           &bull;
-                Last Update: <strong>10/31/2023</strong>
+                Last Update: <strong>2/2/2024</strong>
     </div>
   </footer>
 
@@ -180,7 +186,7 @@ $download_feature-&gt;isLive();
   fixed-bottom">
   <div class="btn-group flex-fill">
               <a href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html" class="btn nav__prev-chapter btn-secondary"><i class="bi
-      bi-caret-left-fill"></i> Feature Switches Module</a>
+      bi-caret-left-fill"></i> Feature Switches Drupal Module</a>
   
     
               <span class="btn nav__prev-page js-nav__prev-page
@@ -223,7 +229,7 @@ $download_feature-&gt;isLive();
         <h2 class="h4 mt-4">Matched Pages</h2>
         <ol class="list-unstyled">
                                               <li data-page="readme" value="1">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html">Feature Switches Module<span
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html">Feature Switches Drupal Module<span
               class="js-search-score
               badge
               bg-info rounded-pill badge-sm"></span></a>&nbsp;[General]
@@ -250,7 +256,7 @@ $download_feature-&gt;isLive();
               <h2 class="h4 mt-4">General</h2>
         <ol>
                                 <li data-page="readme" value="1">
-      <a class="js-page-link" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html">Feature Switches Module</a>&nbsp;[General]
+      <a class="js-page-link" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html">Feature Switches Drupal Module</a>&nbsp;[General]
     </li>
   
                                 <li data-page="changelog" value="2">
@@ -280,7 +286,7 @@ $download_feature-&gt;isLive();
                 
         <ul class="list-group list-group-flush">
                                     <a class="list-group-item list-group-item-action"
-                 data-tags="[]" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html">Feature Switches Module</a>
+                 data-tags="[]" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/readme.html">Feature Switches Drupal Module</a>
                                                 <a class="list-group-item list-group-item-action"
                  data-tags="[]" href="/Users/aklump/Code/Packages/d8/feature_switches/docs/pages/general/changelog.html">Changelog</a>
                                                 <a class="list-group-item list-group-item-action"
@@ -291,9 +297,9 @@ $download_feature-&gt;isLive();
   </div>
 </div>
 
-  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.7"></script>
-  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/dist/lunr.js?ver=0.0.7"></script>
-  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/knowledge.min.js?ver=0.0.7"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/node_modules/bootstrap/dist/js/bootstrap.min.js?ver=0.0.8"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/dist/lunr.js?ver=0.0.8"></script>
+  <script src="/Users/aklump/Code/Packages/d8/feature_switches/docs/dist/knowledge.min.js?ver=0.0.8"></script>
 
 </body>
 </html>

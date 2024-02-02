@@ -3,35 +3,25 @@ id: readme
 tags: ''
 -->
 
-# Feature Switches Module
+# Feature Switches Drupal Module
 
 ## Summary
 
-Allows you to flag features as ready or not, live or not from a central "switchboard". Based on these switches your codebase can act one way or another.
+Allows you to flag features as ready/not ready and live/not live from a central "switchboard". Based on these switches your codebase can act one way or another.
 
-## Installation with Composer
+{{ composer_install|raw }}
 
-1. Add to the `repositories` section of _composer.json_.
-
-```json
-{
-  "repositories": [
-    {
-      "type": "github",
-      "url": "https://github.com/aklump/drupal_feature_switches"
-    }
-  ]
-}
-```
-
-1. `composer require aklump_drupal/feature_switches`
+1. Enable this module.
 2. See section below about declaring as a Drupal dependency.
-3. Add this to _.gitignore_: `/web/modules/custom/feature_switches`
 
 ## How to Define Feature Switches
 
 1. Create a file in the same directory as _settings.php_. Call it _feature\_switches.php_.
-2. Add to _settings.php_, this line `include_once __DIR__ . '/feature_switches.php';`.  **Note: you should add this AFTER `$config['system.logging']['error_level']` otherwise you may not see the expected error output, if your features are in error.**
+2. Add to _settings.php_, the following.  **Note: you should add this AFTER `$config['system.logging']['error_level']` otherwise you may not see the expected error output, if your features are in error.**
+   
+    ```php
+    include_once __DIR__ . '/feature_switches.php';
+    ```
 3. Open _feature\_switches.php_ and add one or more features, like this:
 
 ```php
@@ -139,7 +129,7 @@ dependencies:
 
 ## Using Your Feature Switches
 
-The whole point of this module to is allow your codebase to react differently based on a feature being live or not. It's quite simple once your features have been created to check them.
+The whole point of this module to is allow your codebase to react differently based on a feature being live or not. Once your features have been created, it's quite simple to check them.
 
 ### Do Something When the Feature Is Live
 
@@ -156,6 +146,8 @@ if (\Drupal\feature_switches\FeatureSwitches::isLive('user_files_download')) {
 $download_feature = \Drupal\feature_switches\FeatureSwitches::get('download');
 $download_feature->getId();
 $download_feature->getDescription();
+
+// Note: these two are synonymous.
 $download_feature->isReady();
 $download_feature->isLive();
 ```
